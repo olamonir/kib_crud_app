@@ -142,32 +142,44 @@ class _HomePageState extends State<HomePage> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        TextField(
-          controller: _nameController,
-          decoration: const InputDecoration(hintText: hintNameText),
-        ),
-        const SizedBox(
-          height: space10,
-        ),
-        TextField(
-          controller: _quantityController,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(hintText: hintQuantityText),
-        ),
-        const SizedBox(
-          height: space20,
-        ),
-        ElevatedButton(
-          onPressed: () async {
-            // Save new item
-            onBottomSheetButtonAction(itemKey); // Close the bottom sheet
-          },
-          child: Text(itemKey == null ? createNewText : textUpdate),
-        ),
-        const SizedBox(
-          height: space15,
-        )
+        drawNameText(),
+        spacer20(),
+        drawQuantityText(),
+        spacer20(),
+        drawElevationButton(itemKey),
+        spacer20(),
       ],
+    );
+  }
+
+  SizedBox spacer20() {
+    return const SizedBox(
+      height: space20,
+    );
+  }
+
+  TextField drawNameText() {
+    return TextField(
+      controller: _nameController,
+      decoration: const InputDecoration(hintText: hintNameText),
+    );
+  }
+
+  TextField drawQuantityText() {
+    return TextField(
+      controller: _quantityController,
+      keyboardType: TextInputType.number,
+      decoration: const InputDecoration(hintText: hintQuantityText),
+    );
+  }
+
+  ElevatedButton drawElevationButton(int itemKey) {
+    return ElevatedButton(
+      onPressed: () async {
+        // Save new item
+        onBottomSheetButtonAction(itemKey); // Close the bottom sheet
+      },
+      child: Text(itemKey == null ? createNewText : textUpdate),
     );
   }
 
@@ -199,24 +211,26 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text(title),
       ),
-      body: _items.isEmpty
-          ? Center(
-              child: Column(
-                children: const [
-                  Text(
-                    emptyViewTitle,
-                    style: TextStyle(fontSize: 30),
-                  ),
-                  Text(
-                    emptyViewSubTitle,
-                    style: TextStyle(fontSize: 30),
-                  ),
-                ],
-              ),
-            )
-          : itemsList(context),
+      body: _items.isEmpty ? displayEmptyView() : itemsList(context),
       // Add new item button
       floatingActionButton: displayFloatingActionButton(context),
+    );
+  }
+
+  Center displayEmptyView() {
+    return Center(
+      child: Column(
+        children: const [
+          Text(
+            emptyViewTitle,
+            style: TextStyle(fontSize: 30),
+          ),
+          Text(
+            emptyViewSubTitle,
+            style: TextStyle(fontSize: 30),
+          ),
+        ],
+      ),
     );
   }
 
@@ -240,22 +254,27 @@ class _HomePageState extends State<HomePage> {
       color: secondaryColor,
       margin: const EdgeInsets.all(space10),
       elevation: 0,
-      child: ListTile(
-          title: Text(currentItem['name']),
-          subtitle: Text(currentItem['quantity'].toString()),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Edit button
-              generalIcon(currentItem,
-                  () => _showForm(context, currentItem['key']), Icons.edit),
-
-              // Delete button
-              generalIcon(currentItem, () => _deleteItem(currentItem['key']),
-                  Icons.delete),
-            ],
-          )),
+      child: drawListTile(currentItem, context),
     );
+  }
+
+  ListTile drawListTile(
+      Map<String, dynamic> currentItem, BuildContext context) {
+    return ListTile(
+        title: Text(currentItem['name']),
+        subtitle: Text(currentItem['quantity'].toString()),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Edit button
+            generalIcon(currentItem,
+                () => _showForm(context, currentItem['key']), Icons.edit),
+
+            // Delete button
+            generalIcon(currentItem, () => _deleteItem(currentItem['key']),
+                Icons.delete),
+          ],
+        ));
   }
 
   IconButton generalIcon(
