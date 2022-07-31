@@ -263,18 +263,23 @@ class _HomePageState extends State<HomePage> {
     return ListTile(
         title: Text(currentItem['name']),
         subtitle: Text(currentItem['quantity'].toString()),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Edit button
-            generalIcon(currentItem,
-                () => _showForm(context, currentItem['key']), Icons.edit),
+        trailing: drawTrailingWidget(currentItem, context));
+  }
 
-            // Delete button
-            generalIcon(currentItem, () => _deleteItem(currentItem['key']),
-                Icons.delete),
-          ],
-        ));
+  Row drawTrailingWidget(
+      Map<String, dynamic> currentItem, BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Edit button
+        generalIcon(currentItem, () => _showForm(context, currentItem['key']),
+            Icons.edit),
+
+        // Delete button
+        generalIcon(
+            currentItem, () => _deleteItem(currentItem['key']), Icons.delete),
+      ],
+    );
   }
 
   IconButton generalIcon(
